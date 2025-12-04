@@ -86,7 +86,7 @@ def minimax(state, depth, is_maximizing, alpha, beta):
     else:
         min_eval = 9999
         moves = get_legal_moves(state, 2)
-        moves.sort(key=lambda m: evaluate(apply_move(state, m)), reverse=True)
+        moves.sort(key=lambda m: evaluate(apply_move(state, m)), reverse=False)
         if not moves:
             return evaluate(state)
         for move in moves:
