@@ -55,6 +55,8 @@ def evaluate(state):
     if state['D'] == 0: score += 50
     if state['A'] == 0: score -= 30
     if state['B'] == 0: score -= 30
+    if state['A'] % 2 != 0: score += 10
+    if state['B'] % 2 != 0: score += 10
     score += state['C'] + state['D']
     score -= (state['A'] + state['B']) * 0.5
     return score
@@ -70,6 +72,7 @@ def minimax(state, depth, is_maximizing, alpha, beta):
     if is_maximizing:
         max_eval = -9999
         moves = get_legal_moves(state, 1)
+        moves.sort(key=lambda m: evaluate(apply_move(state, m)), reverse=True)
         if not moves:
             return evaluate(state)
         for move in moves:
@@ -83,6 +86,7 @@ def minimax(state, depth, is_maximizing, alpha, beta):
     else:
         min_eval = 9999
         moves = get_legal_moves(state, 2)
+        moves.sort(key=lambda m: evaluate(apply_move(state, m)), reverse=True)
         if not moves:
             return evaluate(state)
         for move in moves:
@@ -105,9 +109,27 @@ def generate_move(state_str):
     best_move = None
     best_score = -9999
     
+    
+    dynamic_depth = 3 
+    
+    
+    
+    active_hands = 0
+    if state['A'] > 0: active_hands += 1
+    if state['B'] > 0: active_hands += 1
+    if state['C'] > 0: active_hands += 1
+    if state['D'] > 0: active_hands += 1
+
+    if active_hands <= 2:
+        dynamic_depth = 6  
+        
+    
     for move in moves:
         new_state = apply_move(state, move)
-        score = minimax(new_state, 3, False, -9999, 9999)
+        
+        
+        score = minimax(new_state, dynamic_depth, False, -9999, 9999)
+        
         if score > best_score:
             best_score = score
             best_move = move
